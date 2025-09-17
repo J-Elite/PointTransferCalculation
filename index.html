@@ -8,113 +8,114 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    padding: 10px;
-    margin: 0;
+    padding: 20px;
 }
 h1 {
     text-align: center;
     color: #d2232a;
-    font-size: 20px;
-    margin-bottom: 15px;
 }
 .container {
     max-width: 650px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 15px;
+    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.input-row, .partner-row, .partner-summary-row {
+.input-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
 }
-.input-row img, .partner-logo {
+.input-row img {
     width: 44px;
     height: 44px;
     object-fit: contain;
 }
 .input-row span {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: bold;
-    min-width: 60px;
 }
-.input-row input, .partner-row input, .partner-row select, .partner-jpoint {
-    font-size: 14px;
+.input-row input {
+    flex: 1;
+    height: 44px;
+    font-size: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
     padding: 0 10px;
-    height: 40px;
     text-align: right;
-    flex: 1;
 }
 .separator {
     border-top: 1px solid #ccc;
-    margin: 15px 0;
+    margin: 20px 0;
+}
+.partner-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.partner-row select, 
+.partner-row input, 
+.partner-jpoint {
+    height: 44px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+}
+.partner-row input {
+    flex: 1;
+    text-align: right;
 }
 .partner-row select {
     flex: 1.2;
 }
 .partner-jpoint {
-    min-width: 100px;
+    min-width: 120px;
     text-align: right;
-    line-height: 40px;
+    line-height: 44px;
     background-color: #f9f9f9;
 }
-.partner-row button, #add-partner {
-    padding: 0 10px;
-    height: 40px;
+.partner-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: none;
+}
+.partner-row button {
+    padding: 0 12px;
+    height: 44px;
     background-color: #d2232a;
     color: #fff;
     border: none;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
 }
-.partner-row button:hover, #add-partner:hover {
-    background-color: #a81a21;
+.partner-row button:hover { background-color: #a81a21; }
+
+.partner-summary-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 8px 0;
+    border-top: 1px solid #ccc;
 }
 .partner-summary-row span {
     font-weight: bold;
 }
 .results {
-    margin-top: 15px;
+    margin-top: 20px;
     background-color: #fdf2f2;
-    padding: 12px;
+    padding: 15px;
     border-radius: 10px;
-    border: 1px solid #d2232a;
+    border: 1px solid #d2232a; /* สีแดงเหมือน UI เดิม */
 }
 .results p {
-    font-size: 16px;
-    margin: 6px 0;
-}
-
-/* Responsive for small screens */
-@media (max-width: 400px) {
-    .input-row span,
-    .partner-row select,
-    .partner-row input,
-    .partner-jpoint,
-    .results p {
-        font-size: 12px;
-    }
-    .partner-row button,
-    #add-partner {
-        height: 36px;
-        font-size: 12px;
-    }
-    .partner-row {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .partner-row select,
-    .partner-row input,
-    .partner-jpoint {
-        width: 100%;
-    }
+    font-size: 18px;
+    margin: 8px 0;
 }
 </style>
 </head>
@@ -127,7 +128,7 @@ h1 {
     <div class="input-row">
         <img src="J POINT Logo.png" alt="J POINT Logo">
         <span>J POINT</span>
-        <input type="number" id="current-jpoint" placeholder="กรอกคะแนน J POINT" min="0">
+        <input type="text" id="current-jpoint" placeholder="กรอกคะแนน J POINT">
     </div>
     <div class="results" id="current-results" style="display:none;">
         <p>ส่วนลดที่ใช้ได้ : <span id="current-discount">0</span> บาท</p>
@@ -169,7 +170,7 @@ let partnerCount = 0;
 // --- J POINT ปัจจุบัน ---
 const currentInput = document.getElementById('current-jpoint');
 currentInput.addEventListener('input', function(){
-    let val = parseInt(this.value)||0;
+    let val = parseInt(this.value.replace(/,/g,'')) || 0;
     this.value = val.toLocaleString();
     calculateTotal(); 
 });
@@ -289,6 +290,7 @@ function calculateTotal(){
     let partnerTotal = 0;
     rows.forEach(row=>{partnerTotal+=parseInt(row.dataset.jpoint||0)});
     
+    // แสดงรวมคะแนน Partner บรรทัดสุดท้ายของ section partner
     const partnerSummaryRow = document.getElementById('partner-summary-row');
     if(rows.length > 0){
         partnerSummaryRow.style.display = 'flex';
@@ -297,6 +299,7 @@ function calculateTotal(){
         partnerSummaryRow.style.display = 'none';
     }
 
+    // แสดง section summary ด้านล่าง
     const grandTotal = currentVal + partnerTotal;
     const grandSummary = document.getElementById('grand-summary');
     if(grandTotal > 0){
@@ -307,6 +310,7 @@ function calculateTotal(){
         grandSummary.style.display = 'none';
     }
 
+    // ส่วนลด J POINT ปัจจุบัน
     const currentResults = document.getElementById('current-results');
     if(currentVal>0){
         currentResults.style.display='block';
