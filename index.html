@@ -9,6 +9,7 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     padding: 20px;
+    margin:0;
 }
 h1 {
     text-align: center;
@@ -21,6 +22,8 @@ h1 {
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transform-origin: top center;
+    transition: transform 0.2s ease;
 }
 .input-row {
     display: flex;
@@ -117,6 +120,18 @@ h1 {
     font-size: 18px;
     margin: 8px 0;
 }
+
+/* ------------------ MOBILE SCALE ------------------ */
+@media (max-width: 400px) {
+    .container {
+        transform: scale(0.8);
+    }
+}
+@media (max-width: 350px) {
+    .container {
+        transform: scale(0.7);
+    }
+}
 </style>
 </head>
 <body>
@@ -192,7 +207,6 @@ function addPartnerRow(){
     container.appendChild(row);
     updatePartnerOptions();
 
-    // --- add input listener ONCE ---
     const input = row.querySelector('.partner-input');
     input.addEventListener('input', function(){
         let val = parseInt(this.value.replace(/,/g,'')) || 0;
@@ -246,8 +260,6 @@ function updateInterval(id){
     const rate = partnerRates[partner];
     logo.src = rate.logo;
     logo.style.display = 'block';
-
-    // คำนวณใหม่ทันทีถ้ามีค่าอยู่
     calculateJPoint(id);
 }
 
