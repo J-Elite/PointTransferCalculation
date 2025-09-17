@@ -203,6 +203,9 @@ function addPartnerRow(){
     updatePartnerOptions();
 
     const input = row.querySelector('.partner-input');
+    input.addEventListener('blur', function(){  // ✅ ปรับอัตโนมัติเมื่อออกจากช่อง
+        adjustToNearestInterval(id);
+    });
     input.addEventListener('input', function(){
         let val = parseInt(this.value.replace(/,/g,'')) || 0;
         this.value = val.toLocaleString();
@@ -255,6 +258,25 @@ function updateInterval(id){
     const rate = partnerRates[partner];
     logo.src = rate.logo;
     logo.style.display = 'block';
+
+    calculateJPoint(id);
+}
+
+function adjustToNearestInterval(id){
+    const row = document.getElementById('partner-row-'+id);
+    const select = row.querySelector('.partner-select');
+    const input = row.querySelector('.partner-input');
+    const partner = select.value;
+    if(!partner) return;
+
+    const rate = partnerRates[partner];
+    let points = parseInt(input.value.replace(/,/g,'')) || 0;
+    if(points <= 0) return;
+
+    // ✅ ปรับค่าให้ใกล้ interval ที่สุด
+    const intervals = Math.round(points / rate.interval);
+    const adjusted = intervals * rate.interval;
+    input.value = adjusted.toLocaleString();
 
     calculateJPoint(id);
 }
