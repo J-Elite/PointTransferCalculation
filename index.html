@@ -54,7 +54,7 @@ h1 {
     box-sizing: border-box;
 }
 .partner-row select {
-    text-align-last: left; /* ทำให้ text อยู่ชิดซ้าย */
+    text-align-last: left;
 }
 .partner-jpoint {
     min-width: 100px;
@@ -91,11 +91,9 @@ h1 {
     background-color: #f9f9f9;
     flex-wrap: wrap;
 }
-/* ปรับ font ให้เท่ากับ input/label อื่นๆ */
 .partner-summary-row span {
     font-size: 14px;
 }
-
 .results {
     margin-top: 15px;
     background-color: #fdf2f2;
@@ -112,6 +110,36 @@ button#add-partner {
     width: 100%;
     height: 36px;
     font-size: 14px;
+}
+
+/* --- Responsive Mobile --- */
+@media (max-width: 400px) {
+    .container {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 18px;
+    }
+    .input-row span, .partner-row span, .partner-summary-row span, .results p, .partner-jpoint {
+        font-size: 12px;
+    }
+    .input-row input, .partner-row input, .partner-row select, .partner-row button, button#add-partner {
+        height: 32px;
+        font-size: 12px;
+        padding: 0 6px;
+    }
+    .partner-jpoint {
+        line-height: 32px;
+        min-width: 80px;
+    }
+    .input-row img, .partner-logo {
+        width: 28px;
+        height: 28px;
+    }
+    .partner-summary-row {
+        padding: 4px 6px;
+        gap: 6px;
+    }
 }
 </style>
 </head>
@@ -163,7 +191,6 @@ const partnerRates = {
 
 let partnerCount = 0;
 
-// --- J POINT ปัจจุบัน ---
 const currentInput = document.getElementById('current-jpoint');
 currentInput.addEventListener('input', function(){
     let val = parseInt(this.value.replace(/,/g,'')) || 0;
@@ -171,7 +198,6 @@ currentInput.addEventListener('input', function(){
     calculateTotal();
 });
 
-// --- Partner Section ---
 function addPartnerRow(){
     partnerCount++;
     const id = partnerCount;
