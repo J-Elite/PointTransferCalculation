@@ -8,148 +8,103 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    padding: 20px;
+    padding: 10px;
+    margin: 0;
 }
 h1 {
     text-align: center;
     color: #d2232a;
+    font-size: 20px;
+    margin-bottom: 10px;
 }
 .container {
+    width: 100%;
     max-width: 650px;
     margin: 0 auto;
     background-color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
 }
 .input-row, .partner-row {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: nowrap; /* ไม่ให้ตกบรรทัด */
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
 }
-.input-row img, .partner-row img {
-    width: 44px;
-    height: 44px;
+.input-row img, .partner-logo {
+    width: 36px;
+    height: 36px;
     object-fit: contain;
-    flex-shrink: 0;
 }
-.input-row span {
-    font-size: 16px;
+.input-row span, .partner-row span {
+    font-size: 14px;
     font-weight: bold;
-    flex-shrink: 0;
+    white-space: nowrap;
 }
-.input-row input {
-    flex: 1;
-    height: 44px;
-    font-size: 16px;
+.input-row input, .partner-row input, .partner-row select {
+    flex: 1 1 auto;
+    height: 36px;
+    font-size: 14px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    padding: 0 10px;
+    padding: 0 8px;
     text-align: right;
-}
-.separator {
-    border-top: 1px solid #ccc;
-    margin: 20px 0;
-}
-.partner-row select, 
-.partner-row input,
-.partner-jpoint {
-    height: 44px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    padding: 0 10px;
-}
-.partner-row input {
-    flex: 1;
-    text-align: right;
-}
-.partner-row select {
-    flex: 1.2;
+    box-sizing: border-box;
 }
 .partner-jpoint {
     min-width: 100px;
     text-align: right;
-    line-height: 44px;
+    line-height: 36px;
     background-color: #f9f9f9;
-    flex-shrink: 0;
-    border-radius:6px;
-    border:1px solid #ccc;
-    padding:0 8px;
-    box-sizing:border-box;
-}
-.partner-logo {
-    display: none;
-    flex-shrink:0;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 14px;
 }
 .partner-row button {
-    padding: 0 12px;
-    height: 44px;
+    padding: 0 8px;
+    height: 36px;
     background-color: #d2232a;
     color: #fff;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
 }
 .partner-row button:hover { background-color: #a81a21; }
-
+.separator {
+    border-top: 1px solid #ccc;
+    margin: 15px 0;
+}
 .partner-summary-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     margin-top: 10px;
-    padding: 8px 0;
-    border-top: 1px solid #ccc;
-    flex-wrap: nowrap;
-}
-.partner-summary-row span {
-    font-weight: bold;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    flex-wrap: wrap;
 }
 .results {
-    margin-top: 20px;
+    margin-top: 15px;
     background-color: #fdf2f2;
-    padding: 15px;
-    border-radius: 10px;
+    padding: 10px;
+    border-radius: 8px;
     border: 1px solid #d2232a;
 }
 .results p {
-    font-size: 18px;
-    margin: 8px 0;
+    font-size: 14px;
+    margin: 4px 0;
 }
-
-/* Mobile adjustments */
-@media (max-width: 480px) {
-    .container {
-        width: 95%;
-        padding: 15px;
-    }
-    h1 {
-        font-size: 20px;
-    }
-    .input-row span,
-    .partner-row select,
-    .partner-row input,
-    .partner-jpoint,
-    .partner-row button,
-    .results p {
-        font-size: 14px;
-    }
-    .input-row input,
-    .partner-row input,
-    .partner-row select,
-    .partner-row button {
-        height: 38px;
-    }
-    .partner-jpoint {
-        line-height: 38px;
-        min-width: 90px;
-    }
-    .partner-row img {
-        width: 38px;
-        height: 38px;
-    }
+button#add-partner {
+    margin-top: 5px;
+    width: 100%;
+    height: 36px;
+    font-size: 14px;
 }
 </style>
 </head>
@@ -158,6 +113,7 @@ h1 {
 <h1>คำนวณคะแนน J POINT</h1>
 <div class="container">
 
+    <!-- J POINT ปัจจุบัน -->
     <div class="input-row">
         <img src="J POINT Logo.png" alt="J POINT Logo">
         <span>J POINT</span>
@@ -169,14 +125,17 @@ h1 {
 
     <div class="separator"></div>
 
+    <!-- Partner Section -->
     <div id="partner-list"></div>
     <button id="add-partner">เพิ่ม Partner</button>
 
+    <!-- รวมคะแนน Partner -->
     <div class="partner-summary-row" id="partner-summary-row" style="display:none;">
         <span>รวมคะแนนจาก Partner: </span>
         <span id="partner-total" style="margin-left:auto;">0 J POINT</span>
     </div>
 
+    <!-- Section สรุป -->
     <div class="results" id="grand-summary" style="display:none;">
         <p>รวมคะแนน J POINT : <span id="grand-total">0</span> J POINT</p>
         <p>ส่วนลดที่ใช้ได้ทั้งหมด : <span id="grand-discount">0</span> บาท</p>
@@ -208,20 +167,21 @@ currentInput.addEventListener('input', function(){
 // --- Partner Section ---
 function addPartnerRow(){
     partnerCount++;
+    const id = partnerCount;
     const container = document.getElementById('partner-list');
     const row = document.createElement('div');
     row.className = 'partner-row';
-    row.id = 'partner-row-' + partnerCount;
+    row.id = 'partner-row-' + id;
 
     row.innerHTML = `
-        <img src="" class="partner-logo" id="logo-${partnerCount}" alt="">
-        <select class="partner-select" onchange="updateInterval(${partnerCount})">
+        <img src="" class="partner-logo" id="logo-${id}" alt="" style="display:none;">
+        <select class="partner-select" onchange="updateInterval(${id})">
             <option value="">เลือก Partner</option>
             ${Object.keys(partnerRates).map(p => `<option value="${p}">${p}</option>`).join('')}
         </select>
         <input type="text" class="partner-input" placeholder="กรอกคะแนน">
-        <span class="partner-jpoint" id="partner-jpoint-${partnerCount}">0 J POINT</span>
-        <button type="button" onclick="removePartnerRow(${partnerCount})">ลบ</button>
+        <span class="partner-jpoint" id="partner-jpoint-${id}">0 J POINT</span>
+        <button type="button" onclick="removePartnerRow(${id})">ลบ</button>
     `;
     container.appendChild(row);
     updatePartnerOptions();
@@ -230,13 +190,13 @@ function addPartnerRow(){
     input.addEventListener('input', function(){
         let val = parseInt(this.value.replace(/,/g,'')) || 0;
         this.value = val.toLocaleString();
-        calculateJPoint(partnerCount);
+        calculateJPoint(id);
     });
 }
 
 function removePartnerRow(id){
     const row = document.getElementById('partner-row-'+id);
-    row.remove();
+    if(row) row.remove();
     updatePartnerOptions();
     calculateTotal();
 }
@@ -279,6 +239,7 @@ function updateInterval(id){
     const rate = partnerRates[partner];
     logo.src = rate.logo;
     logo.style.display = 'block';
+
     calculateJPoint(id);
 }
 
