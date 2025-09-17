@@ -32,19 +32,22 @@ h1 {
     align-items: center;
     gap: 8px;
     margin-bottom: 10px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap; /* ห้ามตกบรรทัด */
 }
 .input-row img, .partner-logo {
-    width: 36px;
-    height: 36px;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
     object-fit: contain;
 }
 .input-row span, .partner-row span {
+    flex: 0 0 auto;
     font-size: 14px;
     white-space: nowrap;
 }
 .input-row input, .partner-row input, .partner-row select {
     flex: 1 1 auto;
+    min-width: 0; /* ย่อได้ */
     height: 36px;
     font-size: 14px;
     border-radius: 6px;
@@ -57,7 +60,8 @@ h1 {
     text-align-last: left;
 }
 .partner-jpoint {
-    min-width: 100px;
+    flex: 0 0 auto;
+    min-width: 90px;
     text-align: right;
     line-height: 36px;
     background-color: #f9f9f9;
@@ -66,6 +70,7 @@ h1 {
     font-size: 14px;
 }
 .partner-row button {
+    flex: 0 0 auto;
     padding: 0 8px;
     height: 36px;
     background-color: #d2232a;
@@ -74,6 +79,7 @@ h1 {
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
+    white-space: nowrap;
 }
 .partner-row button:hover { background-color: #a81a21; }
 .separator {
@@ -89,10 +95,15 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 6px;
     background-color: #f9f9f9;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 .partner-summary-row span {
     font-size: 14px;
+    white-space: nowrap;
+}
+#partner-total {
+    margin-left: auto;
+    text-align: right;
 }
 .results {
     margin-top: 15px;
@@ -110,36 +121,6 @@ button#add-partner {
     width: 100%;
     height: 36px;
     font-size: 14px;
-}
-
-/* --- Responsive Mobile --- */
-@media (max-width: 400px) {
-    .container {
-        padding: 10px;
-    }
-    h1 {
-        font-size: 18px;
-    }
-    .input-row span, .partner-row span, .partner-summary-row span, .results p, .partner-jpoint {
-        font-size: 12px;
-    }
-    .input-row input, .partner-row input, .partner-row select, .partner-row button, button#add-partner {
-        height: 32px;
-        font-size: 12px;
-        padding: 0 6px;
-    }
-    .partner-jpoint {
-        line-height: 32px;
-        min-width: 80px;
-    }
-    .input-row img, .partner-logo {
-        width: 28px;
-        height: 28px;
-    }
-    .partner-summary-row {
-        padding: 4px 6px;
-        gap: 6px;
-    }
 }
 </style>
 </head>
@@ -167,7 +148,7 @@ button#add-partner {
     <!-- รวมคะแนน Partner -->
     <div class="partner-summary-row" id="partner-summary-row" style="display:none;">
         <span>รวมคะแนนจาก Partner : </span>
-        <span id="partner-total" style="margin-left:auto;">0 J POINT</span>
+        <span id="partner-total">0 J POINT</span>
     </div>
 
     <!-- Section สรุป -->
@@ -191,6 +172,7 @@ const partnerRates = {
 
 let partnerCount = 0;
 
+// --- J POINT ปัจจุบัน ---
 const currentInput = document.getElementById('current-jpoint');
 currentInput.addEventListener('input', function(){
     let val = parseInt(this.value.replace(/,/g,'')) || 0;
@@ -198,6 +180,7 @@ currentInput.addEventListener('input', function(){
     calculateTotal();
 });
 
+// --- Partner Section ---
 function addPartnerRow(){
     partnerCount++;
     const id = partnerCount;
