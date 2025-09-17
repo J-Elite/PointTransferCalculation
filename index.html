@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jaymart J POINT Calculator</title>
+<title>J POINT - Point Transfer Calculator</title>
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -53,6 +53,9 @@ h1 {
     padding: 0 8px;
     text-align: right;
     box-sizing: border-box;
+}
+.partner-row select {
+    text-align-last: left; /* ทำให้ text อยู่ชิดซ้าย */
 }
 .partner-jpoint {
     min-width: 100px;
@@ -131,7 +134,7 @@ button#add-partner {
 
     <!-- รวมคะแนน Partner -->
     <div class="partner-summary-row" id="partner-summary-row" style="display:none;">
-        <span>รวมคะแนนจาก Partner: </span>
+        <span>รวมคะแนนจาก Partner : </span>
         <span id="partner-total" style="margin-left:auto;">0 J POINT</span>
     </div>
 
