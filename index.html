@@ -9,7 +9,6 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     padding: 20px;
-    margin:0;
 }
 h1 {
     text-align: center;
@@ -22,8 +21,6 @@ h1 {
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transform-origin: top center;
-    transition: transform 0.2s ease;
 }
 .input-row {
     display: flex;
@@ -121,15 +118,36 @@ h1 {
     margin: 8px 0;
 }
 
-/* ------------------ MOBILE SCALE ------------------ */
-@media (max-width: 400px) {
+/* Mobile adjustments */
+@media (max-width: 480px) {
     .container {
-        transform: scale(0.8);
+        width: 95%;
+        padding: 15px;
     }
-}
-@media (max-width: 350px) {
-    .container {
-        transform: scale(0.7);
+    h1 {
+        font-size: 20px;
+    }
+    .input-row span,
+    .partner-row select,
+    .partner-row input,
+    .partner-jpoint,
+    .partner-row button,
+    .results p {
+        font-size: 14px;
+    }
+    .input-row input,
+    .partner-row input,
+    .partner-row select,
+    .partner-row button {
+        height: 38px;
+    }
+    .partner-jpoint {
+        line-height: 38px;
+        min-width: 100px;
+    }
+    .partner-row img {
+        width: 38px;
+        height: 38px;
     }
 }
 </style>
