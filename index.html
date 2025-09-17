@@ -111,7 +111,7 @@ h1 {
     background-color: #fdf2f2;
     padding: 15px;
     border-radius: 10px;
-    border: 1px solid #d2232a; /* สีแดงเหมือน UI เดิม */
+    border: 1px solid #d2232a;
 }
 .results p {
     font-size: 18px;
@@ -124,7 +124,6 @@ h1 {
 <h1>คำนวณคะแนน J POINT</h1>
 <div class="container">
 
-    <!-- J POINT ปัจจุบัน -->
     <div class="input-row">
         <img src="J POINT Logo.png" alt="J POINT Logo">
         <span>J POINT</span>
@@ -136,17 +135,14 @@ h1 {
 
     <div class="separator"></div>
 
-    <!-- Partner Section -->
     <div id="partner-list"></div>
     <button id="add-partner">เพิ่ม Partner</button>
 
-    <!-- รวมคะแนน Partner -->
     <div class="partner-summary-row" id="partner-summary-row" style="display:none;">
         <span>รวมคะแนนจาก Partner: </span>
         <span id="partner-total" style="margin-left:auto;">0 J POINT</span>
     </div>
 
-    <!-- Section สรุป -->
     <div class="results" id="grand-summary" style="display:none;">
         <p>รวมคะแนน J POINT : <span id="grand-total">0</span> J POINT</p>
         <p>ส่วนลดที่ใช้ได้ทั้งหมด : <span id="grand-discount">0</span> บาท</p>
@@ -172,7 +168,7 @@ const currentInput = document.getElementById('current-jpoint');
 currentInput.addEventListener('input', function(){
     let val = parseInt(this.value.replace(/,/g,'')) || 0;
     this.value = val.toLocaleString();
-    calculateTotal(); 
+    calculateTotal();
 });
 
 // --- Partner Section ---
@@ -189,12 +185,27 @@ function addPartnerRow(){
             <option value="">เลือก Partner</option>
             ${Object.keys(partnerRates).map(p => `<option value="${p}">${p}</option>`).join('')}
         </select>
-        <input type="number" class="partner-input" placeholder="กรอกคะแนน" min="0" disabled>
+        <input type="text" class="partner-input" placeholder="กรอกคะแนน">
         <span class="partner-jpoint" id="partner-jpoint-${partnerCount}">0 J POINT</span>
         <button type="button" onclick="removePartnerRow(${partnerCount})">ลบ</button>
     `;
     container.appendChild(row);
     updatePartnerOptions();
+
+    // --- add input listener ONCE ---
+    const input = row.querySelector('.partner-input');
+    input.addEventListener('input', function(){
+        let val = parseInt(this.value.replace(/,/g,'')) || 0;
+        this.value = val.toLocaleString();
+        calculateJPoint(partnerCount);
+    });
+}
+
+function removePartnerRow(id){
+    const row = document.getElementById('partner-row-'+id);
+    row.remove();
+    updatePartnerOptions();
+    calculateTotal();
 }
 
 function updatePartnerOptions(){
@@ -217,47 +228,27 @@ function updatePartnerOptions(){
 function updateInterval(id){
     const row = document.getElementById('partner-row-' + id);
     const select = row.querySelector('.partner-select');
-    const input = row.querySelector('.partner-input');
     const logo = document.getElementById(`logo-${id}`);
     const partner = select.value;
 
     updatePartnerOptions();
 
     if(!partner){
-        input.disabled = true;
-        input.value = '';
+        row.querySelector('.partner-input').value = '';
         logo.style.display = 'none';
         logo.src = '';
         document.getElementById(`partner-jpoint-${id}`).textContent = '0 J POINT';
+        row.dataset.jpoint = 0;
         calculateTotal();
         return;
     }
 
     const rate = partnerRates[partner];
-    input.disabled = false;
-    input.step = rate.interval;
-
-    const newInput = input.cloneNode(true);
-    input.parentNode.replaceChild(newInput, input);
-
     logo.src = rate.logo;
     logo.style.display = 'block';
 
-    newInput.addEventListener('input', function(){
-        let val = parseInt(this.value)||0;
-        const rounded = Math.floor(val/rate.interval)*rate.interval;
-        if(rounded !== val) this.value = rounded;
-        calculateJPoint(id);
-    });
-
-    if(newInput.value) calculateJPoint(id);
-}
-
-function removePartnerRow(id){
-    const row = document.getElementById('partner-row-'+id);
-    if(row) row.remove();
-    updatePartnerOptions();
-    calculateTotal();
+    // คำนวณใหม่ทันทีถ้ามีค่าอยู่
+    calculateJPoint(id);
 }
 
 function calculateJPoint(id){
@@ -267,7 +258,7 @@ function calculateJPoint(id){
     const jpointDisplay = document.getElementById(`partner-jpoint-${id}`);
 
     const partner = select.value;
-    let points = parseInt(input.value) || 0;
+    let points = parseInt(input.value.replace(/,/g,'')) || 0;
     if(!partner || points <= 0){
         jpointDisplay.textContent = '0 J POINT';
         row.dataset.jpoint=0;
@@ -278,9 +269,8 @@ function calculateJPoint(id){
     const rate = partnerRates[partner];
     const intervals = Math.floor(points/rate.interval);
     const jpoint = intervals*rate.jpoint;
-    input.value = intervals*rate.interval;
-    row.dataset.jpoint = jpoint;
     jpointDisplay.textContent = `${jpoint.toLocaleString()} J POINT`;
+    row.dataset.jpoint = jpoint;
     calculateTotal();
 }
 
@@ -290,7 +280,6 @@ function calculateTotal(){
     let partnerTotal = 0;
     rows.forEach(row=>{partnerTotal+=parseInt(row.dataset.jpoint||0)});
     
-    // แสดงรวมคะแนน Partner บรรทัดสุดท้ายของ section partner
     const partnerSummaryRow = document.getElementById('partner-summary-row');
     if(rows.length > 0){
         partnerSummaryRow.style.display = 'flex';
@@ -299,7 +288,6 @@ function calculateTotal(){
         partnerSummaryRow.style.display = 'none';
     }
 
-    // แสดง section summary ด้านล่าง
     const grandTotal = currentVal + partnerTotal;
     const grandSummary = document.getElementById('grand-summary');
     if(grandTotal > 0){
@@ -310,7 +298,6 @@ function calculateTotal(){
         grandSummary.style.display = 'none';
     }
 
-    // ส่วนลด J POINT ปัจจุบัน
     const currentResults = document.getElementById('current-results');
     if(currentVal>0){
         currentResults.style.display='block';
